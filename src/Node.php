@@ -728,7 +728,8 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
     {
         return $query
             ->where($this->getLeftColumnName(), '<=', $this->getLeft())
-            ->where($this->getRightColumnName(), '>=', $this->getRight());
+            ->where($this->getRightColumnName(), '>=', $this->getRight())
+            ->orderBy($this->getOrderColumnName());
     }
 
     /**
