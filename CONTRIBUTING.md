@@ -14,7 +14,7 @@ The more information you provide, the easier it is to validate that there is a b
 
 ## Requesting a Feature
 
-1. Search [Issues](https://github.com/etrepat/baum/issues) for similar feature requests. It's possible somebody has already asked for this feature or provided a pull request that's still in discussion.
+1. Search [Issues](https://github.com/dogadogmbh/baum/issues) for similar feature requests. It's possible somebody has already asked for this feature or provided a pull request that's still in discussion.
 2. Provide a clear and detailed explanation of the feature you want and why it's important to add.
 3. If the feature is complex, consider writing some initial documentation for it. This will help everyone understand its use cases and if it is finally implemented it will serve as the base for its documentation.
 4. Attempt a Pull Request. If you're at all able, start writing some code. Please understand that this is an open source side-project, so the time devoted to it is quite limited. If you can write some code then that will speed the process greatly.

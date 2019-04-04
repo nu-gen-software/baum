@@ -1,32 +1,44 @@
 {
-  "name": "baum/baum",
+  "name": "dogado/baum",
   "type": "library",
   "description": "Baum is an implementation of the Nested Set pattern for Eloquent models.",
-  "keywords": ["nested set", "laravel", "laravel 4", "laravel 5", "eloquent", "database"],
+  "keywords": ["nested set", "laravel", "laravel 5", "eloquent", "database"],
   "license": "MIT",
   "authors": [
     {
       "name": "Estanislau Trepat",
       "email": "estanis@etrepat.com",
       "homepage": "http://etrepat.com"
+    },
+    {
+      "name": "Gary Pearman",
+      "email": "gaz@red-robot.co.uk",
+      "homepage": "http://red-robot.co.uk"
+    },
+    {
+      "name": "Martin Seysen",
+      "email": "mse@dogado.de",
+      "homepage": "https://www.dogado.de"
     }
+
   ],
   "require": {
-    "php": ">=5.4.0",
-    "illuminate/console": "5.*",
-    "illuminate/database": "5.*",
-    "illuminate/events": "5.*",
-    "illuminate/filesystem": "5.*",
-    "illuminate/support": "5.*"
+    "php": ">=5.6.3",
+    "illuminate/console": "5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*|5.7.*|5.8.*",
+    "illuminate/database": "5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*|5.7.*|5.8.*",
+    "illuminate/events": "5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*|5.7.*|5.8.*",
+    "illuminate/filesystem": "5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*|5.7.*|5.8.*",
+    "illuminate/support": "5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*|5.7.*|5.8.*"
   },
   "require-dev": {
-    "phpunit/phpunit": "~4.0",
+    "phpunit/phpunit": "4.*",
     "mockery/mockery": "~0.9",
-    "d11wtq/boris": "~1.0.10"
+    "satooshi/php-coveralls": "dev-master",
+    "fabpot/php-cs-fixer": "^1.11"
   },
   "autoload": {
-    "psr-0": {
-      "Baum": "src/"
+    "psr-4": {
+      "Baum\\": "src/"
     }
   }
 }
