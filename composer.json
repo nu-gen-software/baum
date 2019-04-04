@@ -1,32 +1,62 @@
 {
-  "name": "baum/baum",
+  "name": "etrepat/baum",
   "type": "library",
   "description": "Baum is an implementation of the Nested Set pattern for Eloquent models.",
-  "keywords": ["nested set", "laravel", "laravel 4", "laravel 5", "eloquent", "database"],
+  "keywords": ["nested set", "laravel", "laravel 5", "eloquent", "database"],
   "license": "MIT",
   "authors": [
     {
       "name": "Estanislau Trepat",
       "email": "estanis@etrepat.com",
       "homepage": "http://etrepat.com"
+    },
+    {
+      "name": "Gary Pearman",
+      "email": "gaz@red-robot.co.uk",
+      "homepage": "http://red-robot.co.uk"
+    },
+    {
+      "name": "Martin Seysen",
+      "email": "mse@dogado.de",
+      "homepage": "https://www.dogado.de"
+    },
+    {
+      "name": "Hung Nguyen",
+      "email": "hungnm144@gmail.com",
+      "homepage": "http://github.com/hungnm144"
+    },
+    {
+      "name": "Sithira Munasinghe",
+      "email": "sithiraac@gmail.com",
+      "homepage": "http://github.com/Sithira"
     }
+
   ],
   "require": {
-    "php": ">=5.4.0",
-    "illuminate/console": "5.*",
-    "illuminate/database": "5.*",
-    "illuminate/events": "5.*",
-    "illuminate/filesystem": "5.*",
-    "illuminate/support": "5.*"
+    "php": ">=7.1.0",
+    "illuminate/console": "5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*|5.7.*",
+    "illuminate/database": "5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*|5.7.*",
+    "illuminate/events": "5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*",
+    "illuminate/filesystem": "5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*|5.7.*",
+    "illuminate/support": "5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*|5.7.*"
   },
   "require-dev": {
-    "phpunit/phpunit": "~4.0",
+    "phpunit/phpunit": "4.*",
     "mockery/mockery": "~0.9",
-    "d11wtq/boris": "~1.0.10"
+    "d11wtq/boris": "~1.0.10",
+    "satooshi/php-coveralls": "^2.0",
+    "fabpot/php-cs-fixer": "^1.11"
   },
   "autoload": {
-    "psr-0": {
-      "Baum": "src/"
+    "psr-4": {
+      "Baum\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Baum\\Providers\\BaumServiceProvider"
+      ]
     }
   }
 }
