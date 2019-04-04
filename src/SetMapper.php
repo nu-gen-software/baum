@@ -56,7 +56,62 @@ class SetMapper
             return $result;
         });
     }
-
+	
+	/**
+    * Update a tree structure in the database. Unguards & wraps in transaction.
+    *
+    * @param   array|\Illuminate\Support\Contracts\ArrayableInterface
+    * @return  boolean
+    */
+   public function updateMap($nodeList) {
+     $self = $this;
+ 
+     return $this->wrapInTransaction(function() use ($self, $nodeList) {
+       forward_static_call(array(get_class($self->node), 'unguard'));
+       $result = true;
+       try {
+         $flattenTree = $this->flattenNestable($nodeList);
+         foreach ($flattenTree as $branch) {
+           $self->node->flushEventListeners();
+           $model = $self->node->find($branch['id']);
+           $model->fill($branch);
+           $model->save();
+         }
+       } catch (\Exception $e) {
+           $result = false;
+       }
+       forward_static_call(array(get_class($self->node), 'reguard'));
+       return $result;
+     });
+   }
+ 
+   /**
+    * Flattens an array to contain 'id', 'lft', 'rgt', 'depth', 'parent_id' as a valid tree
+    * @param $nestableArray
+    * @param null $parent_id
+    * @param int $depth
+    * @return array
+    */
+   private $bound = 0;
+   public function flattenNestable($nestableArray, $parent_id = null, $depth = 0)
+   {
+     $return = array();
+     foreach ($nestableArray as $subArray) {
+       $returnSubSubArray = array();
+       $lft = $this->bound;
+       if (isset($subArray['children'])) {
+         $returnSubSubArray = $this->flattenNestable($subArray['children'], $subArray['id'], ($depth + 1));
+         $rgt = $this->bound + 1;
+         $this->bound;
+       } else {
+         $rgt = $this->bound;
+       }
+       $return[] = array('id' => $subArray['id'], 'parent_id' => $parent_id, 'depth' => $depth, 'lft' => $lft, 'rgt' => $rgt);
+       $return = array_merge($return, $returnSubSubArray);
+     }
+     return $return;
+   }
+ 
     /**
      * Maps a tree structure into the database without unguarding nor wrapping
      * inside a transaction.
@@ -98,7 +153,7 @@ class SetMapper
      * @param array $affectedKeys
      * @return bool
      */
-    protected function mapTreeRecursive(array $tree, $parentKey = null, array &$affectedKeys = [])
+    protected function mapTreeRecursive(array $tree, $parentKey = null, array &$affectedKeys = [], $root = true)
     {
         // For every attribute entry: We'll need to instantiate a new node either
         // from the database (if the primary key was supplied) or a new instance. Then,
@@ -106,6 +161,7 @@ class SetMapper
         // present) and save it. Finally, tail-recurse performing the same
         // operations for any child node present. Setting the `parent_id` property at
         // each level will take care of the nesting work for us.
+		$sibling = null;
         foreach ($tree as $attributes) {
             $node = $this->firstOrNew($this->getSearchAttributes($attributes));
 
@@ -122,7 +178,13 @@ class SetMapper
                 return false;
             }
 
-            if (!$node->isRoot()) {
+            if($root) {
+				if($sibling) {
+					$node->moveToRightOf($sibling);
+				}
+
+				$sibling = $node;
+			} else {
                 $node->makeLastChildOf($node->parent);
             }
 
@@ -132,7 +194,7 @@ class SetMapper
                 $children = $attributes[$this->getChildrenKeyName()];
 
                 if (count($children) > 0) {
-                    $result = $this->mapTreeRecursive($children, $node->getKey(), $affectedKeys);
+                    $result = $this->mapTreeRecursive($children, $node->getKey(), $affectedKeys, false);
 
                     if (!$result) {
                         return false;

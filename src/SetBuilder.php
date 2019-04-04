@@ -97,7 +97,10 @@ class SetBuilder
   public function children($node)
   {
       $query = $this->node->newQuery();
-
+		// return empty collection when querying for a parent_id == null
+		if ($node->getKey() == null) {
+			return new Collection();
+		}
       $query->where($this->node->getQualifiedParentColumnName(), '=', $node->getKey());
 
     // We must also add the scoped column values to the query to compute valid

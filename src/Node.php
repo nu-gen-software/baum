@@ -588,7 +588,15 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
     {
         return with(new static())->makeTree($nodeList);
     }
-
+	/**
+	* Pass it a nested array of ID's to re-order the tree in the DB.
+	*
+	* @param   array|\Illuminate\Support\Contracts\ArrayableInterface
+	* @return  boolean
+	*/
+	public static function rebuildTree($nodeList) {
+		return with(new static)->updateTree($nodeList);
+	}
     /**
      * Query scope which extracts a certain node object from the current query
      * expression.
@@ -600,7 +608,7 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
      */
     public function scopeWithoutNode(Builder $query, Node $node)
     {
-        return $query->where($node->getKeyName(), '!=', $node->getKey());
+		return $query->where($node->getTable() . '.' . $node->getKeyName(), '!=', $node->getKey());
     }
 
     /**
@@ -967,6 +975,20 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
 
         return $this->computeLevel();
     }
+    
+    /**
+    * Returns true if node is a direct descendant of $other.
+    *
+    * @param NestedSet
+    * @return bool
+    */
+    public function isChildOf($other)
+    {
+        return (
+            intval($this->parent_id) === intval($other->id) &&
+            $this->inSameScope($other)
+        );
+    }
 
     /**
      * Returns true if node is a descendant.
@@ -1291,6 +1313,9 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
         $this->getConnection()->transaction(function () use ($self) {
             $self->reload();
             $level = $self->getLevel();
+			if ($level == $self->getOriginal($self->getDepthColumnName())) {
+				return;
+			}
             $self->newNestedSetQuery()
                 ->where($self->getKeyName(), $self->getKey())
                 ->update([$self->getDepthColumnName() => $level]);
@@ -1463,9 +1488,21 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
     public function makeTree($nodeList)
     {
         $mapper = new SetMapper($this);
-
         return $mapper->map($nodeList);
     }
+	
+	/**
+	* Maps the provided tree structure into the database using the current node
+	* as the parent. The provided tree structure will be inserted/updated as the
+	* descendancy subtree of the current node instance.
+	*
+	* @param   array|\Illuminate\Support\Contracts\ArrayableInterface
+	* @return  boolean
+	*/
+	public function updateTree($nodeList) {
+		$mapper = new SetMapper($this);
+		return $mapper->updateMap($nodeList);
+	}
 
     /**
      * Main move method. Here we handle all node movements with the corresponding

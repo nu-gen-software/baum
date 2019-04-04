@@ -60,11 +60,11 @@ class InstallCommand extends Command
      *
      * @return void
      */
-    public function fire()
+    public function handle()
     {
         $name = $this->input->getArgument('name');
-        $this->writeMigration($name);
-        $this->writeModel($name);
+	    $this->writeModel($name);
+	    $this->writeMigration($name);
     }
 
     /**
@@ -89,7 +89,7 @@ class InstallCommand extends Command
     protected function writeMigration($name)
     {
         $output = pathinfo($this->migrator->create($name, $this->getMigrationsPath()), PATHINFO_FILENAME);
-        $this->line("      <fg=green;options=bold>create</fg=green;options=bold>  $output");
+        $this->line("<fg=green;options=bold>create</fg=green;options=bold>  $output");
     }
 
     /**
@@ -102,7 +102,7 @@ class InstallCommand extends Command
     protected function writeModel($name)
     {
         $output = pathinfo($this->modeler->create($name, $this->getModelsPath()), PATHINFO_FILENAME);
-        $this->line("      <fg=green;options=bold>create</fg=green;options=bold>  $output");
+        $this->line("<fg=green;options=bold>create</fg=green;options=bold>  $output");
     }
 
     /**
@@ -112,7 +112,7 @@ class InstallCommand extends Command
      */
     protected function getMigrationsPath()
     {
-        return $this->laravel->databasePath();
+        return $this->laravel->databasePath() . '/migrations';
     }
 
     /**
@@ -122,6 +122,6 @@ class InstallCommand extends Command
      */
     protected function getModelsPath()
     {
-        return $this->laravel->basePath();
+        return $this->laravel->basePath() . '/app';
     }
 }
